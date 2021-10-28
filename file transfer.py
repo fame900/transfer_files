@@ -1,32 +1,24 @@
 import os
-import datetime as dt
 import shutil
+import logging
 
-path_asu_nas = r'C:\python\afile\asu-nas'
-path_backup = r'C:\python\afile\backup'
+# логирование
+logging.basicConfig(format='%(asctime)15s - %(levelname)s:  %(message)s', datefmt='%d-%m-%Y %H:%M:%S',
+                    level=logging.DEBUG,filename=r'\\asu-videoservr2\Arhiv_docs\log.txt')
 
- # Путь к вашей папке
+path_asu_nas = r'\\asu-nas\docserver'
+path_archive_docx = r'\\asu-videoservr2\Arhiv_docs'
+print('Please wait')
 
-# Получим список имен всего содержимого папки
-# и превратим их в абсолютные пути
-dir_list = [os.path.join(path_asu_nas, x) for x in os.listdir(path_asu_nas)]
-
+dir_list = [os.path.join(path_asu_nas, file) for file in os.listdir(path_asu_nas)] # получаем пути к файлам
 if dir_list:
-    # Создадим список из путей к файлам и дат их создания.
-    date_list = [[x, os.path.getctime(x)] for x in dir_list]
-    print(date_list)
-
+    date_list = [[x, os.path.getctime(x)] for x in dir_list]  # Создадим список из путей к файлам и дат их создания.
     # Отсортируем список по дате создания в обратном порядке
-    sort_date_list = sorted(date_list, key=lambda x: x[1])
-    print(sort_date_list)
-
-    last_file=sort_date_list[0][0].replace('\\', '\\\\')
-    # Выведем первый элемент списка. Он и будет самым последним по дате
-    file_name = last_file[-8:]
-    print(last_file)
-
-    os.chdir(path_backup)  # переходим в директорию, где будем создавать архив
-    print('Please wait')
-    shutil.make_archive(file_name, 'zip', root_dir=last_file) # создание архива
-    print('Ready')
-    day = dt.date.today().strftime('%d.%m.%Y') # время в нужном формате
+    sort_date_list = sorted(date_list, key=lambda x: x[1], reverse=True)[0][0]
+    file_name = sort_date_list[-8:]  # создание имени для zip-файла
+    os.chdir(path_archive_docx)  # переходим в директорию, где будем создавать архив
+    archive = shutil.make_archive(file_name, 'zip', root_dir=sort_date_list)  # создание архива
+    if archive[-12:] == file_name + '.zip':
+        print('Ready')
+        logging.info(f'Архив № {file_name} создан успешно!')
+    else: logging.info(f'Архив № {file_name} не создан')
