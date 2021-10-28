@@ -2,12 +2,10 @@ import os
 import zipfile
 import docx
 import datetime as dt
+import shutil
 
 os.chdir(r'C:\python\file\123')  # переходим в директорию, где будем создавать архив
-zip_obj = zipfile.ZipFile('archive.zip', "w")  # Создаем архив
-os.chdir(r'C:\python\file\12\test')  # переходим в директорию, где будем добавлять файл
-zip_obj.write("test.docx")  # добавление файла в архив
-zip_obj.close()
+shutil.make_archive('20211028', 'zip', root_dir=r'C:\python\file\20211028') # Создание архива
 
 day = dt.date.today()
 day_format = day.strftime('%d.%m.%Y')
