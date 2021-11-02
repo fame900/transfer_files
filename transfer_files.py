@@ -16,7 +16,7 @@ path_archive_docx = r"\\asu-videoservr2\Arhiv_docs\docserver"
 
 dir_list_asu_nas = [
     os.path.join(path_asu_nas, file) for file in os.listdir(path_asu_nas)
-]  # получаем пути к файлам
+]
 
 dir_list_backup = [
     os.path.join(path_archive_docx, file) for file in os.listdir(path_archive_docx)
